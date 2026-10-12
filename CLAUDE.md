@@ -37,3 +37,26 @@ package; Chrome loads it unpacked from the canonical checkout `~/src/tab-trim/ex
 - Branded Google Chrome (137+) ignores `--load-extension`, so tests use Playwright Chromium.
 - Python launcher: `/usr/bin/python3` is 3.9 here; greenline needs ≥3.11, so run it via
   `python3.14 ~/local/ci-lab-greenline/greenline`.
+
+## Installed copy (Darren's Chrome)
+
+Installed 2026-10-12 with "Load unpacked" from `~/src/tab-trim/extension` into the **Work** profile.
+That profile is managed by boringstack.ai, and its policy allows Developer mode and unpacked extensions.
+All of Darren's normal browsing windows use it. Extension id `hcfjogmehekmcnnndbliejehlmokfhkc`.
+Developer mode is on, so every greenline deploy reaches the browser by self-reload within a minute.
+Reinstalling is needed only if the folder moves.
+
+To reinstall without touching his other windows (cua-driver, Chrome already running):
+
+1. Open a new window: `osascript -e 'tell application "Google Chrome"' -e 'set w to make new window'
+   -e 'set URL of active tab of w to "chrome://extensions/"' -e 'end tell'`. `cua-driver launch_app`
+   cannot open `chrome://` URLs.
+2. `cua-driver get_window_state` on the Extensions window. Click the "Developer mode" AXCheckBox, then
+   click "Load unpacked".
+3. The folder picker belongs to a separate `com.apple.appkit.xpc.openAndSavePanelService` pid (the newest one
+   in `ps`). It has no AX tree. Post `hotkey cmd+shift+g`, then `type_text` with the absolute folder path,
+   then `press_key return` twice, all to **that pid**. Never send cmd+shift+g to Chrome's pid: Chrome
+   treats it as Find Previous and opens the find bar. Verify each step with
+   `cua-driver call screenshot '{"window_id":…}' --screenshot-out-file x.jpg`.
+4. Live check: open one unique URL three times in that window and confirm via AppleScript that two copies
+   remain. Then close the window.
