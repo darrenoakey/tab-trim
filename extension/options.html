@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tab Trim settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="icons/icon48.png" alt="" width="40" height="40" />
+        <div>
+          <h1>Tab Trim</h1>
+          <p class="lede">Limits apply across every window. When a limit is exceeded, the tab you used least recently is closed — and if it was the last tab in its window, the window closes too.</p>
+        </div>
+      </header>
+
+      <form id="settings" novalidate>
+        <div class="field">
+          <label for="maxTabs">Maximum open tabs</label>
+          <input id="maxTabs" name="maxTabs" type="number" inputmode="numeric" min="1" max="1000" step="1" required />
+          <p class="hint">Opening one more tab than this closes the least recently used tab.</p>
+        </div>
+
+        <div class="field">
+          <label for="maxDuplicates">Maximum copies of the same URL</label>
+          <input id="maxDuplicates" name="maxDuplicates" type="number" inputmode="numeric" min="1" max="100" step="1" required />
+          <p class="hint">Opening another copy of a URL beyond this closes its oldest copy.</p>
+        </div>
+
+        <div class="actions">
+          <button id="save" type="submit">Save</button>
+          <button id="reset" type="button" class="secondary">Restore defaults</button>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <p id="summary" class="summary"></p>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

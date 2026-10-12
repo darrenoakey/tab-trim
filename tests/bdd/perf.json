@@ -1,0 +1,146 @@
+{
+  "last_run": "2026-10-12T02:05:36.893Z",
+  "total_duration_ms": 21985,
+  "scenarios": {
+    "duplicates.feature::A copy that is the only tab in its window closes its window": {
+      "duration_ms": 543,
+      "history": [
+        680,
+        808,
+        1537,
+        543
+      ]
+    },
+    "duplicates.feature::A third copy closes the oldest copy": {
+      "duration_ms": 2538,
+      "history": [
+        581,
+        623,
+        869,
+        2538
+      ]
+    },
+    "duplicates.feature::Clicking the same link thirty times leaves two copies": {
+      "duration_ms": 6990,
+      "history": [
+        3468,
+        5537,
+        9068,
+        6990
+      ]
+    },
+    "duplicates.feature::Navigating an existing tab to a URL also counts": {
+      "duration_ms": 417,
+      "history": [
+        584,
+        726,
+        561,
+        417
+      ]
+    },
+    "duplicates.feature::The copy limit can be changed": {
+      "duration_ms": 491,
+      "history": [
+        951,
+        395,
+        491
+      ]
+    },
+    "settings.feature::Rejecting a limit of zero copies": {
+      "duration_ms": 220,
+      "history": [
+        625,
+        216,
+        220
+      ]
+    },
+    "settings.feature::Rejecting a limit that is not a whole number": {
+      "duration_ms": 227,
+      "history": [
+        302,
+        227
+      ]
+    },
+    "settings.feature::Restoring the default limits": {
+      "duration_ms": 343,
+      "history": [
+        735,
+        294,
+        343
+      ]
+    },
+    "settings.feature::Saving a new duplicate limit": {
+      "duration_ms": 205,
+      "history": [
+        481,
+        260,
+        205
+      ]
+    },
+    "settings.feature::Saving a new tab limit": {
+      "duration_ms": 299,
+      "history": [
+        516,
+        214,
+        299
+      ]
+    },
+    "settings.feature::The settings page counts open tabs across windows": {
+      "duration_ms": 259,
+      "history": [
+        713,
+        293,
+        259
+      ]
+    },
+    "settings.feature::The settings page shows the default limits": {
+      "duration_ms": 216,
+      "history": [
+        376,
+        197,
+        216
+      ]
+    },
+    "tab_limit.feature::Opening one tab too many closes the least recently used tab": {
+      "duration_ms": 618,
+      "history": [
+        630,
+        512,
+        618
+      ]
+    },
+    "tab_limit.feature::Switching back to a tab protects it": {
+      "duration_ms": 451,
+      "history": [
+        470,
+        1063,
+        451
+      ]
+    },
+    "tab_limit.feature::The last tab of a window takes its window with it": {
+      "duration_ms": 613,
+      "history": [
+        457,
+        648,
+        613
+      ]
+    },
+    "tab_limit.feature::The oldest tab is found in any window": {
+      "duration_ms": 664,
+      "history": [
+        472,
+        1326,
+        664
+      ]
+    },
+    "tab_limit.feature::Up to the limit nothing is closed": {
+      "duration_ms": 3066,
+      "history": [
+        2601,
+        1948,
+        2855,
+        3066
+      ]
+    }
+  }
+}

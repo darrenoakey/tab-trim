@@ -1,0 +1,22 @@
+# greenline gate configuration — committed to the repo.
+# See docs/greenline.md and docs/DOCTRINE.md for the workflow and invariants.
+contract_version = 1
+main_branch = "main"
+
+# Verdict command. cwd = the worktree being gated. Lint, unit, and both real
+# headless-Chromium suites (integration + BDD, run in parallel). ~45s.
+check = "./run check"
+
+# Deploy command. cwd = the canonical checkout, which is the folder Chrome loads
+# unpacked. Validates the package; the installed extension notices the changed
+# files and reloads itself within a minute.
+deploy = "./run deploy"
+
+# Health-only probe.
+health = "./run health"
+
+# Informational: no auto service; this is a Chrome extension loaded unpacked.
+service = "tab-trim"
+
+# Persistent worktree base for this repo (gate lives at <base>/gate). Internal disk.
+worktree_base = "~/.greenline-worktrees/tab-trim"

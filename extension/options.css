@@ -1,0 +1,118 @@
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --error: #dc2626;
+  --ok: #15803d;
+  --muted: #6b7280;
+  --border: #d1d5db;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #60a5fa;
+    --error: #f87171;
+    --ok: #4ade80;
+    --muted: #9ca3af;
+    --border: #4b5563;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 48px 24px;
+}
+
+main {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.lede {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.field {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 120px;
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+.hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  font-size: 15px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+#status {
+  min-height: 1.4em;
+  margin: 16px 0 0;
+}
+
+#status.ok {
+  color: var(--ok);
+}
+
+#status.error {
+  color: var(--error);
+}
+
+.summary {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}

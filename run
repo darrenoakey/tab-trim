@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# Tab Trim task runner.
+#
+#   ./run check        lint + unit + integration + BDD (the greenline gate verdict)
+#   ./run lint | unit | integration | bdd
+#   ./run deploy       validate the canonical extension package Chrome loads
+#   ./run health       same validation, no side effects
+#   ./run icons        re-render extension/icons from scripts/make-icons.py
+#
+# Browser suites run real headless Chromium. Each suite uses its own temporary
+# profile and an OS-assigned port, so concurrent worktrees never collide.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+# Playwright's Chromium lives outside ~/Library/Caches, which macOS and disk
+# janitors purge. Seeded by APFS clone from the Playwright cache when present.
+STATE_DIR="$HOME/.local/state/tab-trim"
+export PLAYWRIGHT_BROWSERS_PATH="$STATE_DIR/ms-playwright"
+
+ensure_node_modules() {
+  local want have=""
+  want="$(shasum -a 256 package-lock.json | cut -d' ' -f1)"
+  [[ -f node_modules/.lock-sha ]] && have="$(cat node_modules/.lock-sha)"
+  if [[ "$want" != "$have" ]]; then
+    npm ci --prefer-offline --no-audit --no-fund --loglevel=error
+    echo "$want" > node_modules/.lock-sha
+  fi
+}
+
+ensure_browser() {
+  local revision
+  revision="$(node -e "const b=require('./node_modules/playwright-core/browsers.json').browsers;console.log(b.find(x=>x.name==='chromium').revision)")"
+  local target="$PLAYWRIGHT_BROWSERS_PATH/chromium-$revision"
+  [[ -f "$target/INSTALLATION_COMPLETE" ]] && return 0
+  mkdir -p "$PLAYWRIGHT_BROWSERS_PATH"
+  local cached="$HOME/Library/Caches/ms-playwright/chromium-$revision"
+  if [[ -f "$cached/INSTALLATION_COMPLETE" ]]; then
+    rm -rf "$target"
+    cp -Rc "$cached" "$target"
+  else
+    # A full download takes minutes: run `./run check` detached when this fires.
+    npx playwright install chromium
+  fi
+}
+
+prepare() {
+  ensure_node_modules
+  ensure_browser
+}
+
+cmd_lint() {
+  npx eslint --max-warnings=0 .
+  node scripts/validate-package.js
+}
+
+cmd_unit() {
+  node --test 'tests/unit/*.test.js'
+}
+
+cmd_integration() {
+  node --test --test-concurrency=1 --test-timeout=60000 'tests/integration/*.test.js'
+}
+
+cmd_bdd() {
+  npx cucumber-js
+}
+
+# Run the two browser suites side by side; report every failure.
+cmd_check() {
+  prepare
+  cmd_lint
+  cmd_unit
+  local logs
+  logs="$(mktemp -d)"
+  cmd_integration > "$logs/integration.log" 2>&1 &
+  local integration=$!
+  cmd_bdd > "$logs/bdd.log" 2>&1 &
+  local bdd=$!
+  local failed=0
+  wait "$integration" || { failed=1; echo "--- integration FAILED ---"; cat "$logs/integration.log"; }
+  wait "$bdd" || { failed=1; echo "--- bdd FAILED ---"; cat "$logs/bdd.log"; }
+  if [[ $failed -eq 0 ]]; then
+    grep -E '^ℹ (tests|pass|fail)' "$logs/integration.log" | sed 's/^/integration: /'
+    grep -E '^[0-9]+ (scenarios|steps)' "$logs/bdd.log" | sed 's/^/bdd: /'
+  fi
+  rm -rf "$logs"
+  return $failed
+}
+
+# Chrome loads the extension unpacked from this checkout's extension/ folder
+# and reloads itself within a minute of the files changing, so deploying means
+# proving the canonical package is complete and loadable.
+cmd_deploy() {
+  node scripts/validate-package.js
+  echo "deployed: $(git rev-parse --short HEAD) — Chrome picks it up from $ROOT/extension within a minute"
+}
+
+cmd_health() {
+  node scripts/validate-package.js
+}
+
+case "${1:-}" in
+  check) cmd_check ;;
+  lint) prepare; cmd_lint ;;
+  unit) cmd_unit ;;
+  integration) prepare; cmd_integration ;;
+  bdd) prepare; cmd_bdd ;;
+  deploy) cmd_deploy ;;
+  health) cmd_health ;;
+  icons) python3 scripts/make-icons.py ;;
+  *)
+    sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+    exit 2
+    ;;
+esac

@@ -1,0 +1,8 @@
+{
+  "default": {
+    "paths": ["tests/bdd/features/**/*.feature"],
+    "import": ["tests/bdd/support/**/*.js", "tests/bdd/steps/**/*.js"],
+    "format": ["progress"],
+    "strict": true
+  }
+}
